@@ -2,7 +2,7 @@
 
 :root {
     --navigation: #ffffff;
-    --background-primary: #f5f5f5;
+    --background: #f5f5f5;
     --background-secondary: #e4e4e7;
     --text: #20232c;
     --text-secondary: #51545c;
@@ -12,7 +12,7 @@
 }
 
 @theme {
-    --color-background-primary: var(--background-primary);
+    --color-background: var(--background);
     --color-background-secondary: var(--background-secondary);
     --color-outline: var(--outline);
     --color-outline-secondary: var(--outline-secondary);
@@ -36,7 +36,7 @@ html {
 }
 
 body {
-    @apply min-h-screen font-sans bg-linear-to-b from-background-primary to-background-secondary text-text;
+    @apply min-h-screen font-sans bg-linear-to-b from-background to-background-secondary text-text;
 }
 
 a {
@@ -76,7 +76,7 @@ input[type='text'] {
 }
 
 input[type='submit'] {
-    @apply enabled:bg-outline enabled:text-background-primary enabled:cursor-pointer font-semibold text-base xs:text-lg;
+    @apply enabled:bg-outline enabled:text-background enabled:cursor-pointer font-semibold text-base xs:text-lg;
     @apply disabled:bg-background-secondary disabled:text-text-secondary enabled:cursor-pointer disabled:cursor-not-allowed;
 }
 
