@@ -8,12 +8,7 @@ const Navigation = () => {
                     <Logo />
                     <span className="max-[384px]:hidden">URL Shortener</span>
                 </h1>
-                <button
-                    className="px-3 xs:px-4 py-1.5 xs:py-2 rounded-md"
-                    title="Sign in with Google"
-                >
-                    Sign in with Google
-                </button>
+                <button title="Sign in with Google">Sign in with Google</button>
             </div>
         </nav>
     )
