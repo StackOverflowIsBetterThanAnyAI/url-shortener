@@ -5,11 +5,14 @@ import { CiCircleCheck } from 'react-icons/ci'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { LuCopy } from 'react-icons/lu'
 import { LuCopyCheck } from 'react-icons/lu'
+import { RiErrorWarningLine } from 'react-icons/ri'
 import { FetchLoading } from 'fetch-loading'
 import Header from '@/components/header'
 import Section from '@/components/section'
+import { isValidUrl } from '@/helper/isValidUrl'
 
 const Main = () => {
+    const [apiError, setApiError] = useState('')
     const [isCopied, setIsCopied] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [shortUrl, setShortUrl] = useState('')
@@ -17,9 +20,15 @@ const Main = () => {
 
     const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUrl(e.target.value)
+        if (apiError.length) {
+            setApiError('')
+        }
     }
 
     const handleReset = () => {
+        setApiError('')
+        setIsCopied(false)
+        setIsLoading(false)
         setShortUrl('')
         setUrl('')
     }
@@ -32,15 +41,38 @@ const Main = () => {
 
         setIsLoading(true)
         try {
-            setShortUrl('https://kurz.de/abcdef')
+            const response = await fetch('/api/v1/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            })
+
+            if (!response.ok) {
+                const data = await response.json()
+                const error = data.error
+                console.log(
+                    'An error occurred while trying to shorten the URL:',
+                    error,
+                    response.status,
+                    response.statusText
+                )
+                setApiError(error)
+                return
+            }
+
+            const data = await response.json()
+            setShortUrl(data.shortUrl)
+            console.log(data)
         } catch (error) {
+            console.error(
+                'An unexpected error occurred while trying to shorten the URL: ',
+                error
+            )
         } finally {
             setIsLoading(false)
         }
-    }
-
-    const isValidUrl = (url: string) => {
-        return /^(http(s?):\/\/.+\.[a-z]{2,})/i.test(url)
     }
 
     const updateClipboard = (newClip: string) => {
@@ -71,34 +103,36 @@ const Main = () => {
                         disabled={isLoading || !!shortUrl.length}
                         value={url}
                     />
-                    {shortUrl.length ? (
-                        <p className="valid-link-info flex gap-1 items-center">
-                            <FaRegCheckCircle
-                                color="#196348"
-                                aria-hidden="true"
-                                className="h-4 w-4 shrink-0"
-                            />
-                            URL successfully shortened.
-                        </p>
-                    ) : isValidUrl(url) ? (
-                        <p className="valid-link-info flex gap-1 items-center">
-                            <FaRegCheckCircle
-                                color="#196348"
-                                aria-hidden="true"
-                                className="h-4 w-4 shrink-0"
-                            />
-                            Valid URL - your link is ready to be shortened.
-                        </p>
-                    ) : (
-                        <p className="link-info">
-                            Paste a complete URL with the protocol http:// or
-                            https://.
-                        </p>
-                    )}
+                    {!shortUrl.length ? (
+                        apiError.length ? (
+                            <p className="invalid-link-info flex gap-1 items-center">
+                                <RiErrorWarningLine
+                                    color="#5946df"
+                                    aria-hidden="true"
+                                    className="h-4 w-4 shrink-0"
+                                />
+                                {apiError}
+                            </p>
+                        ) : isValidUrl(url) ? (
+                            <p className="valid-link-info flex gap-1 items-center">
+                                <FaRegCheckCircle
+                                    color="#196348"
+                                    aria-hidden="true"
+                                    className="h-4 w-4 shrink-0"
+                                />
+                                Valid URL format - your link is ready to be
+                                shortened.
+                            </p>
+                        ) : (
+                            <p className="link-info">
+                                Paste a complete URL with the protocol http://
+                                or https://.
+                            </p>
+                        )
+                    ) : null}
                     {shortUrl.length ? (
                         <>
-                            <hr className="border border-b border-outline-secondary" />
-                            <div className="flex gap-2 items-center">
+                            <div className="flex gap-2 items-center pt-4">
                                 <CiCircleCheck
                                     color="#196348"
                                     aria-hidden="true"
@@ -125,6 +159,7 @@ const Main = () => {
                                             'kurz.de/asdasdasdasdasdasd'
                                         )
                                     }
+                                    title={isCopied ? undefined : 'Copy link'}
                                     type="button"
                                 >
                                     {isCopied ? (
