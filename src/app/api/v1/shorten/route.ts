@@ -1,6 +1,7 @@
-import { doesDomainExist } from '@/helper/doesDomainExist'
-import { isValidUrl } from '@/helper/isValidUrl'
 import { NextResponse } from 'next/server'
+import { doesDomainExist } from '@/helper/doesDomainExist'
+import { generateKey } from '@/helper/generateKey'
+import { isValidUrl } from '@/helper/isValidUrl'
 
 export async function POST(request: Request) {
     let url = ''
@@ -38,10 +39,10 @@ export async function POST(request: Request) {
         )
     }
 
-    const code = 'abc123'
+    const key = generateKey()
 
     return NextResponse.json(
-        { shortUrl: `https://kurz.de/${code}` },
+        { shortUrl: `https://kurz.de/${key}` },
         { status: 201 }
     )
 }

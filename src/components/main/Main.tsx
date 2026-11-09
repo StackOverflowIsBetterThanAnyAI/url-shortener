@@ -64,7 +64,6 @@ const Main = () => {
 
             const data = await response.json()
             setShortUrl(data.shortUrl)
-            console.log(data)
         } catch (error) {
             console.error(
                 'An unexpected error occurred while trying to shorten the URL: ',
@@ -148,17 +147,13 @@ const Main = () => {
                             <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between bg-outline-secondary text-outline font-semibold p-4 xs:p-2 xs:pl-4 gap-y-4 rounded-xl">
                                 <span
                                     className="min-w-0 truncate max-xs:text-center"
-                                    title="kurz.de/asdasdasdasdasdasd"
+                                    title={shortUrl}
                                 >
-                                    kurz.de/asdasdasdasdasdasd
+                                    {shortUrl}
                                 </span>
                                 <button
                                     className="white flex items-center gap-2 min-w-36 shrink-0 justify-center"
-                                    onClick={() =>
-                                        updateClipboard(
-                                            'kurz.de/asdasdasdasdasdasd'
-                                        )
-                                    }
+                                    onClick={() => updateClipboard(shortUrl)}
                                     title={isCopied ? undefined : 'Copy link'}
                                     type="button"
                                 >
