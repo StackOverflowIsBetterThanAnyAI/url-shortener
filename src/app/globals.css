@@ -75,7 +75,8 @@ input[type='text'] {
     @apply outline-2 outline-background-secondary text-sm xs:text-base;
 }
 
-input[type='submit'] {
+input[type='submit'],
+button.shorten {
     @apply enabled:bg-outline enabled:text-background enabled:cursor-pointer font-semibold text-base xs:text-lg;
     @apply disabled:bg-background-secondary disabled:text-text-secondary enabled:cursor-pointer disabled:cursor-not-allowed;
 }
