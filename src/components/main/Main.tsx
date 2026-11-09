@@ -19,22 +19,23 @@ const Main = () => {
         setUrl(e.target.value)
     }
 
+    const handleReset = () => {
+        setShortUrl('')
+        setUrl('')
+    }
+
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault()
-        if (!isValidUrl(url) || isLoading) return
+        if (!isValidUrl(url) || isLoading) {
+            return
+        }
 
         setIsLoading(true)
         try {
-            // TODO: hier den API-Call zum Kürzen einbauen, z. B.:
-            // const res = await fetch('/api/shorten', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ url }),
-            // })
-            // const data = await res.json()
+            setShortUrl('https://kurz.de/abcdef')
         } catch (error) {
         } finally {
-            // setIsLoading(false)
+            setIsLoading(false)
         }
     }
 
@@ -67,6 +68,8 @@ const Main = () => {
                         placeholder="https://example.com/articles/ideas"
                         className="rounded-md px-4 py-2"
                         onChange={handleChangeUrl}
+                        disabled={isLoading || !!shortUrl.length}
+                        value={url}
                     />
                     {shortUrl ? (
                         <p className="valid-link-info flex gap-1 items-center">
@@ -78,22 +81,85 @@ const Main = () => {
                             URL successfully shortened.
                         </p>
                     ) : null}
-                    {isValidUrl(url) ? (
-                        <p className="valid-link-info flex gap-1 items-center">
-                            <FaRegCheckCircle
-                                color="#196348"
-                                aria-hidden="true"
-                                className="h-4 w-4 shrink-0"
-                            />
-                            Valid URL - your link is ready to be shortened.
-                        </p>
-                    ) : (
-                        <p className="link-info">
-                            Paste a complete URL with the protocol http:// or
-                            https://.
-                        </p>
-                    )}
-                    {isLoading ? (
+                    {!shortUrl.length ? (
+                        isValidUrl(url) ? (
+                            <p className="valid-link-info flex gap-1 items-center">
+                                <FaRegCheckCircle
+                                    color="#196348"
+                                    aria-hidden="true"
+                                    className="h-4 w-4 shrink-0"
+                                />
+                                Valid URL - your link is ready to be shortened.
+                            </p>
+                        ) : (
+                            <p className="link-info">
+                                Paste a complete URL with the protocol http://
+                                or https://.
+                            </p>
+                        )
+                    ) : null}
+                    {shortUrl.length ? (
+                        <>
+                            <hr className="border border-b border-outline-secondary" />
+                            <div className="flex gap-2 items-center">
+                                <CiCircleCheck
+                                    color="#196348"
+                                    aria-hidden="true"
+                                    className="h-8 w-8 shrink-0 bg-green-50 rounded-full"
+                                />
+                                <div className="flex flex-col gap-1">
+                                    <h4>Your short link is ready!</h4>
+                                    <span className="link-info">
+                                        Uniquely created. Just copy and share.
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between bg-outline-secondary text-outline font-semibold p-4 xs:p-2 xs:pl-4 gap-y-4 rounded-xl">
+                                <span
+                                    className="min-w-0 truncate max-xs:text-center"
+                                    title="kurz.de/asdasdasdasdasdasd"
+                                >
+                                    kurz.de/asdasdasdasdasdasd
+                                </span>
+                                <button
+                                    className="white flex items-center gap-2 min-w-36 shrink-0 justify-center"
+                                    onClick={() =>
+                                        updateClipboard(
+                                            'kurz.de/asdasdasdasdasdasd'
+                                        )
+                                    }
+                                    type="button"
+                                >
+                                    {isCopied ? (
+                                        <>
+                                            <LuCopyCheck
+                                                color="#20232c"
+                                                aria-hidden="true"
+                                                className="h-4 w-4 shrink-0"
+                                            />
+                                            <span>Copied link</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <LuCopy
+                                                color="#20232c"
+                                                aria-hidden="true"
+                                                className="h-4 w-4 shrink-0"
+                                            />
+                                            <span>Copy link</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                            <button
+                                className="shorten rounded-md mt-2 px-4 py-2"
+                                title="Shorten another URL"
+                                onClick={handleReset}
+                            >
+                                Shorten another URL
+                            </button>
+                        </>
+                    ) : isLoading ? (
                         <FetchLoading
                             className="rounded-md mt-2 bg-outline cursor-not-allowed h-10! xs:h-11!"
                             theme="#f5f5f5"
@@ -108,54 +174,6 @@ const Main = () => {
                             disabled={!isValidUrl(url)}
                         />
                     )}
-                    <div className="flex gap-2 items-center">
-                        <CiCircleCheck
-                            color="#196348"
-                            aria-hidden="true"
-                            className="h-8 w-8 shrink-0 bg-green-50 rounded-full"
-                        />
-                        <div className="flex flex-col gap-1">
-                            <h4>Your short link is ready!</h4>
-                            <span className="link-info">
-                                Uniquely created. Just copy and share.
-                            </span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between bg-outline-secondary text-outline font-semibold p-4 xs:p-2 xs:pl-4 gap-y-4 rounded-xl">
-                        <span>kurz.de/asdasdasd</span>
-                        <button
-                            className="flex items-center gap-2 min-w-36 justify-center"
-                            onClick={() => updateClipboard('kurz.de/asdasdasd')}
-                            type="button"
-                        >
-                            {isCopied ? (
-                                <>
-                                    <LuCopyCheck
-                                        color="#20232c"
-                                        aria-hidden="true"
-                                        className="h-4 w-4 shrink-0"
-                                    />
-                                    <span>Copied link</span>
-                                </>
-                            ) : (
-                                <>
-                                    <LuCopy
-                                        color="#20232c"
-                                        aria-hidden="true"
-                                        className="h-4 w-4 shrink-0"
-                                    />
-                                    <span>Copy link</span>
-                                </>
-                            )}
-                        </button>
-                    </div>
-                    <button
-                        type="button"
-                        className="shorten rounded-md mt-2 px-4 py-2"
-                        title="Shorten another URL"
-                    >
-                        Shorten another URL
-                    </button>
                 </form>
                 <Section />
             </div>
