@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { IoShieldCheckmarkOutline } from 'react-icons/io5'
+import { LuCopy } from 'react-icons/lu'
 import Logo from '@/components/logo'
 
 const Main = () => {
@@ -20,7 +21,7 @@ const Main = () => {
                     <h2>Long link. Made short.</h2>
                     <h3>Turn your URL into a short, unique link.</h3>
                 </header>
-                <form className="w-full max-w-2xl flex flex-col gap-4 rounded-2xl p-6 xs:p-8">
+                <form className="w-full max-w-2xl flex flex-col gap-4 rounded-2xl p-6 xs:p-8 shadow-2xl shadow-outline/20 outline-2 outline-outline/5!">
                     <label htmlFor="url">Enter your long URL here:</label>
                     <input
                         type="text"
@@ -66,7 +67,14 @@ const Main = () => {
                     </div>
                     <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between bg-outline-secondary text-outline font-semibold p-4 xs:p-2 xs:pl-4 gap-y-4 rounded-xl">
                         <span>kurz.de/asdasdasd</span>
-                        <button>Copy link</button>
+                        <button className="flex items-center gap-2">
+                            <LuCopy
+                                color="#20232c"
+                                aria-hidden="true"
+                                className="h-4 w-4 shrink-0"
+                            />
+                            <span>Copy link</span>
+                        </button>
                     </div>
                 </form>
                 <section className="flex flex-col gap-4 max-xs:text-center text-pretty">
