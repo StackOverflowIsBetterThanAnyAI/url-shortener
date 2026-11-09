@@ -103,6 +103,10 @@ section {
     @apply text-text-secondary text-sm xs:text-base;
 }
 
+.invalid-link-info {
+    @apply text-xs xs:text-sm text-outline;
+}
+
 .valid-link-info {
     @apply text-xs xs:text-sm text-green;
 }
