@@ -7,7 +7,7 @@
     --text: #20232c;
     --text-secondary: #51545c;
     --outline: #5946df;
-    --outline-secondary: #f9edff;
+    --outline-secondary: #f0edff;
     --green: #196348;
 }
 
@@ -36,7 +36,7 @@ html {
 }
 
 body {
-    @apply min-h-screen font-sans bg-linear-to-b from-background to-background-secondary text-text;
+    @apply font-sans bg-linear-to-b from-background to-background-secondary text-text;
 }
 
 a {
