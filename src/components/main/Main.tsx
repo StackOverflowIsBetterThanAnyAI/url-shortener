@@ -1,12 +1,12 @@
 'use client'
 
+import { FetchLoading } from 'fetch-loading'
 import { useState } from 'react'
 import { CiCircleCheck } from 'react-icons/ci'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { LuCopy } from 'react-icons/lu'
 import { LuCopyCheck } from 'react-icons/lu'
 import { RiErrorWarningLine } from 'react-icons/ri'
-import { FetchLoading } from 'fetch-loading'
 import Header from '@/components/header'
 import Section from '@/components/section'
 import { isValidUrl } from '@/helper/isValidUrl'
