@@ -12,17 +12,17 @@ export async function POST(request: Request) {
         }
     } catch {
         return NextResponse.json(
-            { error: 'Invalid URL in request body.' },
+            { error: 'Invalid request body.' },
             { status: 400 }
         )
     }
 
-    if (!isValidUrl(url)) {
-        return NextResponse.json({ error: 'Invalid URL.' }, { status: 400 })
-    }
-
     if (url.length > 2048) {
         return NextResponse.json({ error: 'URL is too long.' }, { status: 422 })
+    }
+
+    if (!isValidUrl(url)) {
+        return NextResponse.json({ error: 'Invalid URL.' }, { status: 400 })
     }
 
     let parsedUrl: URL
@@ -39,10 +39,10 @@ export async function POST(request: Request) {
         )
     }
 
-    const key = generateKey()
+    const short = generateKey()
 
     return NextResponse.json(
-        { shortUrl: `https://kurz.de/${key}` },
+        { shortUrl: `https://kurz.de/${short}` },
         { status: 201 }
     )
 }
