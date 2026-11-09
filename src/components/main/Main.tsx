@@ -101,6 +101,7 @@ const Main = () => {
                         onChange={handleChangeUrl}
                         disabled={isLoading || !!shortUrl.length}
                         value={url}
+                        maxLength={2048}
                     />
                     {!shortUrl.length ? (
                         apiError.length ? (
