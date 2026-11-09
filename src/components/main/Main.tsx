@@ -71,7 +71,7 @@ const Main = () => {
                         disabled={isLoading || !!shortUrl.length}
                         value={url}
                     />
-                    {shortUrl ? (
+                    {shortUrl.length ? (
                         <p className="valid-link-info flex gap-1 items-center">
                             <FaRegCheckCircle
                                 color="#196348"
@@ -80,24 +80,21 @@ const Main = () => {
                             />
                             URL successfully shortened.
                         </p>
-                    ) : null}
-                    {!shortUrl.length ? (
-                        isValidUrl(url) ? (
-                            <p className="valid-link-info flex gap-1 items-center">
-                                <FaRegCheckCircle
-                                    color="#196348"
-                                    aria-hidden="true"
-                                    className="h-4 w-4 shrink-0"
-                                />
-                                Valid URL - your link is ready to be shortened.
-                            </p>
-                        ) : (
-                            <p className="link-info">
-                                Paste a complete URL with the protocol http://
-                                or https://.
-                            </p>
-                        )
-                    ) : null}
+                    ) : isValidUrl(url) ? (
+                        <p className="valid-link-info flex gap-1 items-center">
+                            <FaRegCheckCircle
+                                color="#196348"
+                                aria-hidden="true"
+                                className="h-4 w-4 shrink-0"
+                            />
+                            Valid URL - your link is ready to be shortened.
+                        </p>
+                    ) : (
+                        <p className="link-info">
+                            Paste a complete URL with the protocol http:// or
+                            https://.
+                        </p>
+                    )}
                     {shortUrl.length ? (
                         <>
                             <hr className="border border-b border-outline-secondary" />
