@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server'
 import { doesDomainExist } from '@/helper/doesDomainExist'
 import { generateKey } from '@/helper/generateKey'
 import { isValidUrl } from '@/helper/isValidUrl'
+import { auth } from '@/lib/auth/server'
 import { sql } from '@/lib/db/db'
 
 export async function POST(request: Request) {
+    const { data: session } = await auth.getSession()
+    const userId = session?.user.id ?? null
+
     let url = ''
     try {
         const body = await request.json()
@@ -45,8 +49,8 @@ export async function POST(request: Request) {
             const short = generateKey()
 
             const rows = await sql`
-            INSERT INTO links (short, url)
-            VALUES (${short}, ${url})
+            INSERT INTO links (short, url, user_id)
+            VALUES (${short}, ${url}, ${userId})
             ON CONFLICT (short) DO NOTHING
             RETURNING short
         `
