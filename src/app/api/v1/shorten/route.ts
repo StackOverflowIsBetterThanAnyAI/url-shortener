@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { doesDomainExist } from '@/helper/doesDomainExist'
 import { generateKey } from '@/helper/generateKey'
 import { isValidUrl } from '@/helper/isValidUrl'
-import { sql } from '@/lib/db'
+import { sql } from '@/lib/db/db'
 
 export async function POST(request: Request) {
     let url = ''
