@@ -9,9 +9,11 @@ import Logo from '@/components/logo'
 import { authClient } from '@/lib/auth/client'
 
 const Navigation = () => {
+    const [isLoggingIn, setIsLoggingIn] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
 
     const handleSignIn = async () => {
+        setIsLoggingIn(true)
         try {
             await authClient.signIn.social({
                 provider: 'google',
@@ -22,6 +24,8 @@ const Navigation = () => {
                 'An unexpected error occurred while trying to sign in: ',
                 error
             )
+        } finally {
+            setIsLoggingIn(false)
         }
     }
 
@@ -48,7 +52,7 @@ const Navigation = () => {
                     <Logo />
                     <span className="max-sm:hidden">URL Shortener</span>
                 </h1>
-                {isPending || isLoggingOut ? (
+                {isPending || isLoggingOut || isLoggingIn ? (
                     <FetchLoading
                         center
                         className="cursor-not-allowed rounded-md w-26! xs:w-30! h-8! xs:h-10! outline-2 outline-background-secondary"
