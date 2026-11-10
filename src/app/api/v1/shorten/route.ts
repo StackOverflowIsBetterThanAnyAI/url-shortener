@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { doesDomainExist } from '@/helper/doesDomainExist'
 import { generateKey } from '@/helper/generateKey'
 import { isValidUrl } from '@/helper/isValidUrl'
+import { sql } from '@/lib/db'
 
 export async function POST(request: Request) {
     let url = ''
@@ -39,10 +40,26 @@ export async function POST(request: Request) {
         )
     }
 
-    const short = generateKey()
+    try {
+        while (true) {
+            const short = generateKey()
 
-    return NextResponse.json(
-        { shortUrl: `https://kurz.de/${short}` },
-        { status: 201 }
-    )
+            const rows = await sql`
+            INSERT INTO links (short, url)
+            VALUES (${short}, ${url})
+            ON CONFLICT (short) DO NOTHING
+            RETURNING short
+        `
+
+            if (rows.length) {
+                return NextResponse.json(
+                    { shortUrl: `https://kurz.de/${short}` },
+                    { status: 201 }
+                )
+            }
+        }
+    } catch (error) {
+        console.error('Failed to insert link:', error)
+        return NextResponse.json({ error: 'Database error.' }, { status: 500 })
+    }
 }
