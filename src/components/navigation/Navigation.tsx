@@ -51,15 +51,15 @@ const Navigation = () => {
                         center
                         className="cursor-not-allowed rounded-md w-24! xs:w-30! h-8! xs:h-10! outline-2 outline-background-secondary"
                     />
-                ) : session?.user.name.length ? (
+                ) : session ? (
                     <div className="flex gap-6">
                         <button
                             className="white flex gap-2 items-center justify-center min-w-24 xs:min-w-30 max-w-36 xs:max-w-48 w-fit"
-                            title={session.user.name}
-                            onClick={handleSignIn}
+                            title={session.user.name || session.user.email}
+                            onClick={() => {}}
                         >
                             <span className="min-w-0 truncate">
-                                {session.user.name}
+                                {session.user.name || session.user.email}
                             </span>
                         </button>
                         <button
