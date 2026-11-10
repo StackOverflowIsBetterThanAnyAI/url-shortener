@@ -90,6 +90,11 @@ button.shorten {
     @apply enabled:hover:bg-outline-hover enabled:active:bg-outline-active;
 }
 
+a.shorten {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 no-underline font-semibold text-base xs:text-lg;
+    @apply bg-outline text-background hover:bg-outline-hover active:bg-outline-active;
+}
+
 label {
     @apply text-sm xs:text-base font-semibold;
 }
