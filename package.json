@@ -6,7 +6,10 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint"
+        "lint": "eslint",
+        "cy:open": "cypress open --e2e",
+        "cy:run": "cypress run --e2e",
+        "cy:run:db": "cypress run --e2e --expose ALLOW_DB_WRITES=true"
     },
     "prettier": "prettier-es5",
     "dependencies": {
@@ -23,6 +26,7 @@
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "cypress": "^16.2.1",
         "eslint": "^9",
         "eslint-config-next": "16.4.5",
         "prettier-es5": "^0.0.4",
