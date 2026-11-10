@@ -74,8 +74,8 @@ const Main = () => {
         }
     }
 
-    const updateClipboard = (newClip: string) => {
-        navigator.clipboard.writeText(newClip).then(() => {
+    const updateClipboard = (link: string) => {
+        navigator.clipboard.writeText(link).then(() => {
             setIsCopied(true)
             setTimeout(() => {
                 setIsCopied(false)
