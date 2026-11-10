@@ -7,7 +7,7 @@ const Section = () => {
                 <IoShieldCheckmarkOutline
                     color="#51545c"
                     aria-hidden="true"
-                    className="h-4 w-4 shrink-0"
+                    className="h-4 w-4 shrink-0 max-xs:hidden"
                 />{' '}
                 No sign-up needed. Free. Ready to share.
             </p>
