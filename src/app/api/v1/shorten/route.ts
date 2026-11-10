@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { doesDomainExist } from '@/helper/doesDomainExist'
-import { generateKey } from '@/helper/generateKey'
-import { isValidUrl } from '@/helper/isValidUrl'
+import { doesDomainExist } from '@/helper/server/doesDomainExist'
+import { generateKey } from '@/helper/server/generateKey'
+import { isValidUrl } from '@/helper/client/isValidUrl'
 import { auth } from '@/lib/auth/server'
 import { sql } from '@/lib/db/db'
 
