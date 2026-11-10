@@ -1,4 +1,4 @@
-import { isValidUrl } from '@/helper/isValidUrl'
+import { isValidUrl } from '@/helper/client/isValidUrl'
 
 type handleShortenUrlApiProps = {
     e: React.SubmitEvent<HTMLFormElement>
@@ -48,6 +48,7 @@ export const handleShortenUrlApi = async ({
         const data = await response.json()
         setShortUrl(data.shortUrl)
     } catch (error) {
+        setApiError('Something went wrong. Please try again.')
         console.error(
             'An unexpected error occurred while trying to shorten the URL: ',
             error

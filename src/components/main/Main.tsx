@@ -7,10 +7,10 @@ import { FaRegCheckCircle } from 'react-icons/fa'
 import { LuCopy } from 'react-icons/lu'
 import { LuCopyCheck } from 'react-icons/lu'
 import { RiErrorWarningLine } from 'react-icons/ri'
-import { handleShortenUrlApi } from '@/app/api/v1/shorten/handleShortenUrlApi'
+import { handleShortenUrlApi } from '@/helper/client/handleShortenUrlApi'
 import Header from '@/components/header'
 import Section from '@/components/section'
-import { isValidUrl } from '@/helper/isValidUrl'
+import { isValidUrl } from '@/helper/client/isValidUrl'
 
 const Main = () => {
     const [apiError, setApiError] = useState('')
@@ -153,6 +153,7 @@ const Main = () => {
                             <button
                                 className="shorten rounded-md mt-2 px-4 py-2"
                                 title="Shorten another URL"
+                                type="button"
                                 onClick={handleReset}
                             >
                                 Shorten another URL
