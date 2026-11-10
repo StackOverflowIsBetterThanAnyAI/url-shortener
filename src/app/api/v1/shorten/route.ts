@@ -56,8 +56,9 @@ export async function POST(request: Request) {
         `
 
             if (rows.length) {
+                const origin = new URL(request.url).origin
                 return NextResponse.json(
-                    { shortUrl: `https://kurz.de/${short}` },
+                    { shortUrl: `${origin}/${short}` },
                     { status: 201 }
                 )
             }
