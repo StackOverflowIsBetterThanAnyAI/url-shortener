@@ -1,7 +1,8 @@
 'use client'
 
 import { FetchLoading } from 'fetch-loading'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { CiCircleCheck } from 'react-icons/ci'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { RiErrorWarningLine } from 'react-icons/ri'
@@ -17,6 +18,8 @@ const Main = () => {
     const [shortUrl, setShortUrl] = useState('')
     const [url, setUrl] = useState('')
 
+    const inputRef = useRef<HTMLInputElement>(null)
+
     const handleChangeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUrl(e.target.value)
         if (apiError.length) {
@@ -25,10 +28,13 @@ const Main = () => {
     }
 
     const handleReset = () => {
-        setApiError('')
-        setIsLoading(false)
-        setShortUrl('')
-        setUrl('')
+        flushSync(() => {
+            setApiError('')
+            setIsLoading(false)
+            setShortUrl('')
+            setUrl('')
+        })
+        inputRef.current?.focus()
     }
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -55,6 +61,7 @@ const Main = () => {
                     <input
                         type="text"
                         id="url"
+                        ref={inputRef}
                         placeholder="https://example.com/articles/ideas"
                         className="rounded-md px-4 py-2"
                         onChange={handleChangeUrl}

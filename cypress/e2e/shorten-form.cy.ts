@@ -101,7 +101,10 @@ describe('Shorten form', () => {
 
             cy.contains('button', 'Shorten another URL').click()
 
-            urlInput().should('be.enabled').and('have.value', '')
+            urlInput()
+                .should('be.enabled')
+                .and('have.value', '')
+                .and('have.focus')
             submitButton().should('be.disabled')
             cy.contains('Your short link is ready!').should('not.exist')
             cy.get('@shorten.all').should('have.length', 1)
