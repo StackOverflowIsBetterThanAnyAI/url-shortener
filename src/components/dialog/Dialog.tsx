@@ -1,6 +1,8 @@
-import { RefObject } from 'react'
+import { RefObject, useState } from 'react'
 import { IoClose, IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { MdOutlineLogout } from 'react-icons/md'
+import { DialogLink } from '@/components/dialog'
+import type { DialogLinkType } from './DialogLink'
 import type { authClient } from '@/lib/auth/client'
 
 type Session = typeof authClient.$Infer.Session
@@ -12,6 +14,7 @@ type DialogProps = {
 }
 
 const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
+    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([])
     const handleCloseDialog = () => {
         dialogRef.current?.close()
     }
@@ -70,6 +73,11 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
                 </button>
             </div>
             <h3 className="font-semibold">Links saved to your account</h3>
+            <ul className="flex flex-col">
+                {dialogLinks.map((item) => (
+                    <DialogLink key={item.short} {...item} />
+                ))}
+            </ul>
             <p className="flex gap-1 items-center text-sm xs:text-base">
                 <IoShieldCheckmarkOutline
                     color="#51545c"

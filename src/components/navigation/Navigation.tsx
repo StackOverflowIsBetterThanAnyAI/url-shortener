@@ -5,7 +5,7 @@ import { useState, useRef } from 'react'
 import { FaRegFolder } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
 import { MdOutlineLogout } from 'react-icons/md'
-import Dialog from '@/components/dialog'
+import { Dialog } from '@/components/dialog'
 import Logo from '@/components/logo'
 import { authClient } from '@/lib/auth/client'
 
