@@ -96,6 +96,7 @@ button.shorten {
     @apply enabled:bg-outline enabled:text-background enabled:cursor-pointer font-semibold text-base xs:text-lg;
     @apply disabled:bg-background-secondary disabled:text-text-secondary enabled:cursor-pointer disabled:cursor-not-allowed;
     @apply enabled:hover:bg-outline-hover enabled:active:bg-outline-active;
+    @apply focus-visible:outline-outline-hover! focus-visible:shadow-2xl focus-visible:shadow-outline-hover/40!;
 }
 
 a.shorten {
