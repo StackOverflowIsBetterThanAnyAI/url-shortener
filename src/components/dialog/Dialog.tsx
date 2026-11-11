@@ -33,6 +33,7 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
     return (
         <dialog
             ref={dialogRef}
+            closedby="any"
             className="w-full max-w-4xl bg-background m-auto rounded-md p-8 open:flex backdrop:bg-text/40 flex-col gap-4 xs:gap-6 shadow-2xl shadow-navigation/20"
         >
             <div className="flex justify-between gap-4">
