@@ -30,7 +30,7 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
                 >
                     <IoClose
                         aria-hidden="true"
-                        className="h-5 xs:h-6 w-5 xs:w-6 shrink-0"
+                        className="h-4 xs:h-5 w-4 xs:w-5 shrink-0"
                     />{' '}
                     <span>Close</span>
                 </button>
