@@ -20,8 +20,8 @@ const NotFound = ({ description, title }: NotFoundProps) => {
                             <span className="text-xl font-semibold text-outline">
                                 404
                             </span>
-                            <h2>{title}</h2>
-                            <h3 className="text-text-secondary text-pretty">
+                            <h2 className="text-center">{title}</h2>
+                            <h3 className="text-center text-text-secondary text-pretty">
                                 {description}
                             </h3>
                         </div>
