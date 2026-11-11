@@ -68,11 +68,11 @@ h1 {
 }
 
 h2 {
-    @apply text-3xl sm:text-4xl font-bold text-center;
+    @apply text-3xl sm:text-4xl font-bold;
 }
 
 h3 {
-    @apply text-base sm:text-lg text-center;
+    @apply text-base sm:text-lg;
 }
 
 h4 {
