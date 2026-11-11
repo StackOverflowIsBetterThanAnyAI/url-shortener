@@ -39,6 +39,14 @@ html {
     @apply m-0 p-0 bg-background-secondary xs:scrollbar-gutter-stable;
 }
 
+html:has(dialog:modal) {
+    background-color: color-mix(
+        in srgb,
+        var(--text) 40%,
+        var(--background-secondary)
+    );
+}
+
 body {
     @apply font-sans bg-linear-to-b from-background to-background-secondary text-text;
 }

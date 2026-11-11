@@ -14,7 +14,18 @@ type DialogProps = {
 }
 
 const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
-    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([])
+    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([
+        {
+            short: 'a7K2mQ',
+            url: 'https://www.example.com/articles/ideas-for-tomorrow',
+            created_at: '2026-11-05T10:24:00.000Z',
+        },
+        {
+            short: 'b9R4xN',
+            url: 'https://example.org/projects/summer-notes/a-very-long-path-to-test-the-ellipsis-behaviour',
+            created_at: '2026-11-03T08:12:00.000Z',
+        },
+    ])
     const handleCloseDialog = () => {
         dialogRef.current?.close()
     }
@@ -22,7 +33,7 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
     return (
         <dialog
             ref={dialogRef}
-            className="w-full max-w-4xl bg-background m-auto rounded-md p-8 open:flex flex-col gap-4 xs:gap-6 shadow-2xl shadow-text/20"
+            className="w-full max-w-4xl bg-background m-auto rounded-md p-8 open:flex backdrop:bg-text/40 flex-col gap-4 xs:gap-6 shadow-2xl shadow-navigation/20"
         >
             <div className="flex justify-between gap-4">
                 <h2>My links</h2>
