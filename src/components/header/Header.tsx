@@ -4,8 +4,10 @@ const Header = () => {
     return (
         <header className="flex flex-col items-center gap-2">
             <Logo />
-            <h2>Long link. Made short.</h2>
-            <h3>Turn your URL into a short, unique link.</h3>
+            <h2 className="text-center">Long link. Made short.</h2>
+            <h3 className="text-center">
+                Turn your URL into a short, unique link.
+            </h3>
         </header>
     )
 }
