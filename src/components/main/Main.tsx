@@ -4,17 +4,15 @@ import { FetchLoading } from 'fetch-loading'
 import { useState } from 'react'
 import { CiCircleCheck } from 'react-icons/ci'
 import { FaRegCheckCircle } from 'react-icons/fa'
-import { LuCopy } from 'react-icons/lu'
-import { LuCopyCheck } from 'react-icons/lu'
 import { RiErrorWarningLine } from 'react-icons/ri'
 import { handleShortenUrlApi } from '@/helper/client/handleShortenUrlApi'
+import CopyButton from '@/components/copy-button'
 import Header from '@/components/header'
 import Section from '@/components/section'
 import { isValidUrl } from '@/helper/client/isValidUrl'
 
 const Main = () => {
     const [apiError, setApiError] = useState('')
-    const [isCopied, setIsCopied] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [shortUrl, setShortUrl] = useState('')
     const [url, setUrl] = useState('')
@@ -28,7 +26,6 @@ const Main = () => {
 
     const handleReset = () => {
         setApiError('')
-        setIsCopied(false)
         setIsLoading(false)
         setShortUrl('')
         setUrl('')
@@ -42,15 +39,6 @@ const Main = () => {
             setIsLoading,
             setShortUrl,
             url,
-        })
-    }
-
-    const updateClipboard = (link: string) => {
-        navigator.clipboard.writeText(link).then(() => {
-            setIsCopied(true)
-            setTimeout(() => {
-                setIsCopied(false)
-            }, 2500)
         })
     }
 
@@ -123,32 +111,10 @@ const Main = () => {
                                 >
                                     {shortUrl}
                                 </span>
-                                <button
-                                    className="white flex items-center gap-2 min-w-36 shrink-0 justify-center"
-                                    onClick={() => updateClipboard(shortUrl)}
-                                    title={isCopied ? undefined : 'Copy link'}
-                                    type="button"
-                                >
-                                    {isCopied ? (
-                                        <>
-                                            <LuCopyCheck
-                                                color="#20232c"
-                                                aria-hidden="true"
-                                                className="h-4 w-4 shrink-0"
-                                            />
-                                            <span>Copied link</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <LuCopy
-                                                color="#20232c"
-                                                aria-hidden="true"
-                                                className="h-4 w-4 shrink-0"
-                                            />
-                                            <span>Copy link</span>
-                                        </>
-                                    )}
-                                </button>
+                                <CopyButton
+                                    text={shortUrl}
+                                    className="min-w-36"
+                                />
                             </div>
                             <button
                                 className="shorten rounded-md mt-2 px-4 py-2"
