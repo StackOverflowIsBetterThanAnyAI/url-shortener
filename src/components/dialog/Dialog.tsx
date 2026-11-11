@@ -36,15 +36,23 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
                 </button>
             </div>
             <div className="flex items-center justify-between flex-wrap gap-4 bg-background-secondary rounded-md p-4">
-                <div className="flex items-center gap-3">
-                    <span className="text-lg rounded-full h-10 w-10 items-center justify-center flex font-bold bg-navigation text-outline">
+                <div className="flex items-center gap-3 min-w-0">
+                    <span className="text-lg rounded-full h-10 w-10 shrink-0 items-center justify-center flex font-bold bg-navigation text-outline">
                         {session.user.name.charAt(0).toUpperCase()}
                     </span>
-                    <div className="flex flex-col gap-1">
-                        <span className="text-base font-semibold">
+                    <div className="flex flex-col gap-1 min-w-0">
+                        <span
+                            className="text-base font-semibold min-w-0 truncate"
+                            title={session.user.name}
+                        >
                             {session.user.name}
                         </span>
-                        <span className="text-sm">{session.user.email}</span>
+                        <span
+                            className="text-sm min-w-0 truncate"
+                            title={session.user.email}
+                        >
+                            {session.user.email}
+                        </span>
                     </div>
                 </div>
                 <button
