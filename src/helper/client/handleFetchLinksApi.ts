@@ -4,7 +4,7 @@ import { setItemInSessionStorage } from '@/helper/client/sessionStorage'
 
 type handleFetchLinksApiProps = {
     setApiError: React.Dispatch<React.SetStateAction<string>>
-    setDialogLinks: React.Dispatch<React.SetStateAction<DialogLinkType[]>>
+    setDialogLinks: (links: DialogLinkType[]) => void
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
