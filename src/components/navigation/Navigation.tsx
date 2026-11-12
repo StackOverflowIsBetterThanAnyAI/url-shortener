@@ -102,7 +102,7 @@ const Navigation = () => {
                 <div className="w-full max-w-7xl mx-auto flex justify-between gap-4 xs:gap-6 items-center px-4 sm:px-6">
                     <h1 className="flex items-center gap-2">
                         <Logo />
-                        <span className="max-sm:hidden">URL Shortener</span>
+                        <span className="max-sm:sr-only">URL Shortener</span>
                     </h1>
                     {(isPending && !user) || isLoggingOut || isLoggingIn ? (
                         <FetchLoading
