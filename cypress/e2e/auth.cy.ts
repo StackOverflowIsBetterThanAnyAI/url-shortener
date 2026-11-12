@@ -54,6 +54,34 @@ describe('Authentication (stubbed session)', () => {
             cy.get('button[title="Sign in with Google"]').should('not.exist')
         })
 
+        it('gives the "My links" dialog an accessible name', () => {
+            cy.stubSession(USER)
+            cy.intercept('GET', '/api/v1/links', { body: { links: [] } })
+            cy.visit('/')
+            cy.wait('@getSession')
+
+            cy.contains('button', 'My links').click()
+            cy.get('dialog').should('have.attr', 'open')
+            cy.get('dialog').should(
+                'have.attr',
+                'aria-labelledby',
+                'dialog-title'
+            )
+            cy.get('#dialog-title').should('have.text', 'My links')
+        })
+
+        it('keeps the page title readable for screen readers on small screens', () => {
+            cy.viewport(375, 740)
+            cy.stubSession(null)
+            cy.visit('/')
+            cy.wait('@getSession')
+
+            cy.get('h1')
+                .contains('URL Shortener')
+                .should('have.css', 'position', 'absolute')
+                .and('not.have.css', 'display', 'none')
+        })
+
         it('falls back to the email if the user has no name', () => {
             cy.stubSession({ name: '', email: USER.email })
             cy.visit('/')
