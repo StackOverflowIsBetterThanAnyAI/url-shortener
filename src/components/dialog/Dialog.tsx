@@ -4,48 +4,59 @@ import { FetchLoading } from 'fetch-loading'
 import React, { RefObject, useEffect, useState } from 'react'
 import { IoClose, IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { MdOutlineLogout } from 'react-icons/md'
+import { RiErrorWarningLine } from 'react-icons/ri'
 import DialogLink from './DialogLink'
 import type { DialogLinkType } from './DialogLink'
 import { handleFetchLinksApi } from '@/helper/client/handleFetchLinksApi'
-import type { Session } from '@/lib/auth/client'
+import { isDialogLinkArray } from '@/helper/client/isDialogLinkArray'
+import {
+    getStoredSessionData,
+    setItemInSessionStorage,
+} from '@/helper/client/sessionStorage'
+import type { StoredUser } from '@/helper/client/isStoredUser'
 
 type DialogProps = {
     dialogRef: RefObject<HTMLDialogElement | null>
     handleLogout: () => void
     isDialogOpen: boolean
-    session: Session
     setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+    user: StoredUser
 }
 
 const Dialog = ({
     dialogRef,
     handleLogout,
     isDialogOpen,
-    session,
     setIsDialogOpen,
+    user,
 }: DialogProps) => {
-    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([])
+    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>(() => {
+        const { links } = getStoredSessionData()
+        return isDialogLinkArray(links) ? links : []
+    })
     const [isLoading, setIsLoading] = useState(false)
     const [apiError, setApiError] = useState('')
 
-    const fetchLinks = async () => {
-        handleFetchLinksApi({
-            session,
-            setApiError,
-            setDialogLinks,
-            setIsLoading,
-        })
-    }
-
     useEffect(() => {
         if (isDialogOpen) {
-            fetchLinks()
+            handleFetchLinksApi({ setApiError, setDialogLinks, setIsLoading })
         }
     }, [isDialogOpen])
 
+    useEffect(() => {
+        if (getStoredSessionData().isDialogOpen === true) {
+            dialogRef.current?.showModal()
+            setIsDialogOpen(true)
+        }
+    }, [dialogRef, setIsDialogOpen])
+
     const handleCloseDialog = () => {
         dialogRef.current?.close()
+    }
+
+    const handleDialogClosed = () => {
         setIsDialogOpen(false)
+        setItemInSessionStorage('isDialogOpen', false)
     }
 
     const LinksInfo = (
@@ -63,6 +74,7 @@ const Dialog = ({
         <dialog
             ref={dialogRef}
             closedby="any"
+            onClose={handleDialogClosed}
             className="w-full max-w-4xl bg-background m-auto rounded-md p-8 open:flex backdrop:bg-text/40 flex-col gap-4 xs:gap-6 shadow-2xl shadow-navigation/20"
         >
             <div className="flex justify-between gap-4">
@@ -82,20 +94,20 @@ const Dialog = ({
             <div className="flex items-center justify-between flex-wrap gap-4 bg-background-secondary rounded-md p-4">
                 <div className="flex items-center gap-3 min-w-0">
                     <span className="text-lg rounded-full h-10 w-10 shrink-0 items-center justify-center flex font-bold bg-navigation text-outline">
-                        {(session.user.name || session.user.email).charAt(0)}
+                        {(user.name || user.email).charAt(0)}
                     </span>
                     <div className="flex flex-col gap-1 min-w-0">
                         <span
                             className="text-base font-semibold min-w-0 truncate"
-                            title={session.user.name}
+                            title={user.name}
                         >
-                            {session.user.name}
+                            {user.name}
                         </span>
                         <span
                             className="text-sm min-w-0 truncate"
-                            title={session.user.email}
+                            title={user.email}
                         >
-                            {session.user.email}
+                            {user.email}
                         </span>
                     </div>
                 </div>
@@ -113,7 +125,7 @@ const Dialog = ({
                     <span>Log out</span>
                 </button>
             </div>
-            {dialogLinks?.length ? (
+            {dialogLinks.length ? (
                 <>
                     <h3 className="font-semibold">
                         Links saved to your account
@@ -131,6 +143,15 @@ const Dialog = ({
                     theme="#5946df"
                     ariaLabel="Loading links"
                 />
+            ) : apiError ? (
+                <p className="invalid-link-info flex gap-1 items-center">
+                    <RiErrorWarningLine
+                        color="#5946df"
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0"
+                    />
+                    {apiError}
+                </p>
             ) : (
                 <>
                     <p className="font-semibold">
