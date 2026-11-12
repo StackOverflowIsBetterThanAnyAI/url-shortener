@@ -80,6 +80,50 @@ describe('Authentication (stubbed session)', () => {
 
             cy.get('button[title="Sign in with Google"]').should('be.visible')
             cy.get('nav').should('not.contain', USER.name)
+            cy.window().then((win) => {
+                expect(win.sessionStorage.getItem('url-shortener')).to.equal(null)
+            })
+        })
+    })
+
+    describe('cached user in sessionStorage', () => {
+        const STORAGE = JSON.stringify({
+            user: { id: 'user-e2e', ...USER },
+            isDialogOpen: true,
+            links: [],
+        })
+
+        const visitWithCache = () =>
+            cy.visit('/', {
+                onBeforeLoad(win) {
+                    win.sessionStorage.setItem('url-shortener', STORAGE)
+                },
+            })
+
+        it('shows the cached user and reopens the dialog before the session has loaded', () => {
+            cy.intercept('GET', '/api/v1/links', { body: { links: [] } })
+            cy.intercept('GET', '/api/auth/get-session*', {
+                body: buildSession(USER),
+                delay: 3000,
+            }).as('getSession')
+
+            visitWithCache()
+
+            cy.get('nav', { timeout: 1500 }).should('contain', USER.name)
+            cy.get('dialog', { timeout: 1500 }).should('have.attr', 'open')
+        })
+
+        it('drops the cached user when the session has expired', () => {
+            cy.stubSession(null)
+
+            visitWithCache()
+            cy.wait('@getSession')
+
+            cy.get('button[title="Sign in with Google"]').should('be.visible')
+            cy.get('nav').should('not.contain', USER.name)
+            cy.window().then((win) => {
+                expect(win.sessionStorage.getItem('url-shortener')).to.equal(null)
+            })
         })
     })
 })
