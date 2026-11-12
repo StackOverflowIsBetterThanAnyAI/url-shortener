@@ -30,7 +30,7 @@
         "@types/react-dom": "^19",
         "cypress": "^16.2.1",
         "eslint": "^9",
-        "eslint-config-next": "16.4.5",
+        "eslint-config-next": "16.4.6",
         "prettier-es5": "^0.0.4",
         "tailwindcss": "^4",
         "typescript": "^5"
