@@ -10,6 +10,7 @@ import Logo from '@/components/logo'
 import { authClient } from '@/lib/auth/client'
 
 const Navigation = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [isLoggingIn, setIsLoggingIn] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
 
@@ -17,6 +18,7 @@ const Navigation = () => {
 
     const handleOpenDialog = () => {
         dialogRef.current?.showModal()
+        setIsDialogOpen(true)
     }
 
     const handleSignIn = async () => {
@@ -112,7 +114,9 @@ const Navigation = () => {
                 <Dialog
                     dialogRef={dialogRef}
                     handleLogout={handleLogout}
+                    isDialogOpen={isDialogOpen}
                     session={session}
+                    setIsDialogOpen={setIsDialogOpen}
                 />
             ) : null}
         </>
