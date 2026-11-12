@@ -126,7 +126,10 @@ describe('Shorten form', () => {
             submitButton().click()
             cy.wait('@shorten')
 
-            cy.get('[role="alert"]').should('have.text', 'Domain does not exist.')
+            cy.get('[role="alert"]').should(
+                'have.text',
+                'Domain does not exist.'
+            )
             urlInput()
                 .should('have.attr', 'aria-invalid', 'true')
                 .and('have.attr', 'aria-describedby', 'url-hint')
