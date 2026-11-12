@@ -1,7 +1,13 @@
 'use client'
 
 import { FetchLoading } from 'fetch-loading'
-import React, { RefObject, useEffect, useState } from 'react'
+import React, {
+    RefObject,
+    useEffect,
+    useMemo,
+    useState,
+    useSyncExternalStore,
+} from 'react'
 import { IoClose, IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { MdOutlineLogout } from 'react-icons/md'
 import { RiErrorWarningLine } from 'react-icons/ri'
@@ -10,10 +16,14 @@ import type { DialogLinkType } from './DialogLink'
 import { handleFetchLinksApi } from '@/helper/client/handleFetchLinksApi'
 import { isDialogLinkArray } from '@/helper/client/isDialogLinkArray'
 import {
+    getRawSessionData,
     getStoredSessionData,
+    parseSessionData,
     setItemInSessionStorage,
 } from '@/helper/client/sessionStorage'
 import type { StoredUser } from '@/helper/client/isStoredUser'
+
+const subscribeToNothing = () => () => {}
 
 type DialogProps = {
     dialogRef: RefObject<HTMLDialogElement | null>
@@ -30,16 +40,31 @@ const Dialog = ({
     setIsDialogOpen,
     user,
 }: DialogProps) => {
-    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>(() => {
-        const { links } = getStoredSessionData()
+    const storedData = useSyncExternalStore(
+        subscribeToNothing,
+        getRawSessionData,
+        () => null
+    )
+    const cachedLinks = useMemo(() => {
+        const { links } = parseSessionData(storedData)
         return isDialogLinkArray(links) ? links : []
-    })
+    }, [storedData])
+
+    const [fetchedLinks, setFetchedLinks] = useState<DialogLinkType[] | null>(
+        null
+    )
+    const dialogLinks = fetchedLinks ?? cachedLinks
+
     const [isLoading, setIsLoading] = useState(false)
     const [apiError, setApiError] = useState('')
 
     useEffect(() => {
         if (isDialogOpen) {
-            handleFetchLinksApi({ setApiError, setDialogLinks, setIsLoading })
+            handleFetchLinksApi({
+                setApiError,
+                setDialogLinks: setFetchedLinks,
+                setIsLoading,
+            })
         }
     }, [isDialogOpen])
 
