@@ -1,34 +1,59 @@
-import { RefObject, useState } from 'react'
+'use client'
+
+import { FetchLoading } from 'fetch-loading'
+import { RefObject, useCallback, useEffect, useState } from 'react'
 import { IoClose, IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { MdOutlineLogout } from 'react-icons/md'
 import { DialogLink } from '@/components/dialog'
 import type { DialogLinkType } from './DialogLink'
-import type { authClient } from '@/lib/auth/client'
-
-type Session = typeof authClient.$Infer.Session
+import { handleFetchLinksApi } from '@/helper/client/handleFetchLinksApi'
+import type { Session } from '@/lib/auth/client'
 
 type DialogProps = {
     dialogRef: RefObject<HTMLDialogElement | null>
     handleLogout: () => void
     session: Session
+    setApiError: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
-    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([
-        {
-            short: 'a7K2mQ',
-            url: 'https://www.example.com/articles/ideas-for-tomorrow',
-            created_at: '2026-11-05T10:24:00.000Z',
-        },
-        {
-            short: 'b9R4xN',
-            url: 'https://example.org/projects/summer-notes/a-very-long-path-to-test-the-ellipsis-behaviour',
-            created_at: '2026-11-03T08:12:00.000Z',
-        },
-    ])
+const Dialog = ({
+    dialogRef,
+    handleLogout,
+    session,
+    setApiError,
+}: DialogProps) => {
+    const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+
+    const fetchLinks = useCallback(
+        () =>
+            handleFetchLinksApi({
+                session,
+                setApiError,
+                setDialogLinks,
+                setIsLoading,
+            }),
+        [session, setApiError]
+    )
+
+    useEffect(() => {
+        fetchLinks()
+    }, [fetchLinks])
+
     const handleCloseDialog = () => {
         dialogRef.current?.close()
     }
+
+    const LinksInfo = (
+        <p className="flex gap-1 items-center text-sm xs:text-base">
+            <IoShieldCheckmarkOutline
+                color="#51545c"
+                aria-hidden="true"
+                className="h-4 w-4 shrink-0 max-xs:hidden"
+            />{' '}
+            Only links created while signed in appear here.
+        </p>
+    )
 
     return (
         <dialog
@@ -84,20 +109,33 @@ const Dialog = ({ dialogRef, handleLogout, session }: DialogProps) => {
                     <span>Log out</span>
                 </button>
             </div>
-            <h3 className="font-semibold">Links saved to your account</h3>
-            <ul className="flex flex-col">
-                {dialogLinks.map((item) => (
-                    <DialogLink key={item.short} {...item} />
-                ))}
-            </ul>
-            <p className="flex gap-1 items-center text-sm xs:text-base">
-                <IoShieldCheckmarkOutline
-                    color="#51545c"
-                    aria-hidden="true"
-                    className="h-4 w-4 shrink-0 max-xs:hidden"
-                />{' '}
-                Only links created while signed in appear here.
-            </p>
+            {dialogLinks?.length ? (
+                <>
+                    <h3 className="font-semibold">
+                        Links saved to your account
+                    </h3>
+                    <ul className="flex flex-col">
+                        {dialogLinks.map((item) => (
+                            <DialogLink key={item.short} {...item} />
+                        ))}
+                    </ul>
+                    {LinksInfo}
+                </>
+            ) : isLoading ? (
+                <FetchLoading
+                    center
+                    theme="#5946df"
+                    ariaLabel="Loading links"
+                />
+            ) : (
+                <>
+                    <p className="font-semibold">
+                        You haven't shortened any links yet.
+                    </p>
+
+                    {LinksInfo}
+                </>
+            )}
         </dialog>
     )
 }
