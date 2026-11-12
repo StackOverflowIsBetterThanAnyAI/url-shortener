@@ -1,13 +1,28 @@
 'use client'
 
 import { FetchLoading } from 'fetch-loading'
-import { useState, useRef } from 'react'
+import {
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react'
 import { FaRegFolder } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
 import { MdOutlineLogout } from 'react-icons/md'
 import { Dialog } from '@/components/dialog'
 import Logo from '@/components/logo'
+import { isStoredUser } from '@/helper/client/isStoredUser'
+import {
+    clearSessionStorage,
+    getRawSessionData,
+    parseSessionData,
+    setItemInSessionStorage,
+} from '@/helper/client/sessionStorage'
 import { authClient } from '@/lib/auth/client'
+
+const subscribeToNothing = () => () => {}
 
 const Navigation = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -19,6 +34,7 @@ const Navigation = () => {
     const handleOpenDialog = () => {
         dialogRef.current?.showModal()
         setIsDialogOpen(true)
+        setItemInSessionStorage('isDialogOpen', true)
     }
 
     const handleSignIn = async () => {
@@ -42,6 +58,7 @@ const Navigation = () => {
         setIsLoggingOut(true)
         try {
             await authClient.signOut()
+            clearSessionStorage()
         } catch (error) {
             console.error(
                 'An unexpected error occurred while trying to log out: ',
@@ -54,6 +71,31 @@ const Navigation = () => {
 
     const { data: session, isPending } = authClient.useSession()
 
+    const storedData = useSyncExternalStore(
+        subscribeToNothing,
+        getRawSessionData,
+        () => null
+    )
+    const storedUser = useMemo(() => {
+        const { user } = parseSessionData(storedData)
+        return isStoredUser(user) ? user : null
+    }, [storedData])
+
+    useEffect(() => {
+        if (isPending) {
+            return
+        }
+
+        if (session) {
+            const { id, name, email } = session.user
+            setItemInSessionStorage('user', { id, name, email })
+        } else {
+            clearSessionStorage()
+        }
+    }, [session, isPending])
+
+    const user = session?.user ?? (isPending ? storedUser : null)
+
     return (
         <>
             <nav className="w-full min-h-20 flex items-center ">
@@ -62,19 +104,19 @@ const Navigation = () => {
                         <Logo />
                         <span className="max-sm:hidden">URL Shortener</span>
                     </h1>
-                    {isPending || isLoggingOut || isLoggingIn ? (
+                    {(isPending && !user) || isLoggingOut || isLoggingIn ? (
                         <FetchLoading
                             center
                             className="cursor-not-allowed rounded-md w-26! xs:w-30! h-8! xs:h-10! outline-2 outline-background-secondary"
                         />
-                    ) : session ? (
+                    ) : user ? (
                         <div className="flex gap-4 xs:gap-6 items-center">
                             <span className="font-semibold text-sm xs:text-base min-w-0 max-w-36 xs:max-w-48 w-fit truncate max-md:hidden">
-                                {session.user.name || session.user.email}
+                                {user.name || user.email}
                             </span>
                             <button
                                 className="white flex gap-2 items-center justify-center min-w-26 xs:min-w-30 max-w-36 xs:max-w-48 w-fit"
-                                title={session.user.name || session.user.email}
+                                title={user.name || user.email}
                                 onClick={handleOpenDialog}
                             >
                                 <FaRegFolder
@@ -110,13 +152,13 @@ const Navigation = () => {
                     )}
                 </div>
             </nav>
-            {session ? (
+            {user ? (
                 <Dialog
                     dialogRef={dialogRef}
                     handleLogout={handleLogout}
                     isDialogOpen={isDialogOpen}
-                    session={session}
                     setIsDialogOpen={setIsDialogOpen}
+                    user={user}
                 />
             ) : null}
         </>
