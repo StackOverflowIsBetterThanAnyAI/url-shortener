@@ -41,5 +41,8 @@ jobs:
       - name: Check formatting
         run: npm run prettier
 
+      - name: Generate Next.js types
+        run: npx next typegen
+
       - name: Type check
         run: npx tsc --noEmit
