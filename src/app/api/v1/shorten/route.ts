@@ -5,6 +5,24 @@ import { isValidUrl } from '@/helper/client/isValidUrl'
 import { auth } from '@/lib/auth/server'
 import { sql } from '@/lib/db/db'
 
+const normalizeHostname = (hostname: string) =>
+    hostname.toLowerCase().replace(/\.$/, '')
+
+const getRequestHostname = (request: Request) => {
+    const host =
+        request.headers.get('x-forwarded-host') ?? request.headers.get('host')
+
+    try {
+        return new URL(`http://${host}`).hostname
+    } catch {
+        return new URL(request.url).hostname
+    }
+}
+
+const isOwnHost = (url: URL, request: Request) =>
+    normalizeHostname(url.hostname) ===
+    normalizeHostname(getRequestHostname(request))
+
 export async function POST(request: Request) {
     const { data: session } = await auth.getSession()
     const userId = session?.user.id ?? null
@@ -35,6 +53,13 @@ export async function POST(request: Request) {
         parsedUrl = new URL(url)
     } catch {
         return NextResponse.json({ error: 'Invalid URL.' }, { status: 400 })
+    }
+
+    if (isOwnHost(parsedUrl, request)) {
+        return NextResponse.json(
+            { error: 'Links to this site cannot be shortened.' },
+            { status: 422 }
+        )
     }
 
     if (!(await doesDomainExist(parsedUrl.hostname))) {

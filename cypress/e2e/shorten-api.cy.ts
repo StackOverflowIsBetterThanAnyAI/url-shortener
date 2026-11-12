@@ -63,6 +63,18 @@ describe('POST /api/v1/shorten', () => {
         )
     })
 
+    it('rejects links to its own domain', () => {
+        shorten(
+            { url: 'https://short.example.com/a7K2mQ' },
+            { 'X-Forwarded-Host': 'short.example.com' }
+        ).then((res) => {
+            expect(res.status).to.eq(422)
+            expect(res.body).to.deep.eq({
+                error: 'Links to this site cannot be shortened.',
+            })
+        })
+    })
+
     it('only allows POST', () => {
         cy.request({
             method: 'GET',
