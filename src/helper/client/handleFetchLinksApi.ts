@@ -22,9 +22,6 @@ export const handleFetchLinksApi = async ({
     try {
         const response = await fetch('/api/v1/links', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         })
 
         if (!response.ok) {
