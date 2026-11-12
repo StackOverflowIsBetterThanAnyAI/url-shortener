@@ -1,10 +1,10 @@
 'use client'
 
 import { FetchLoading } from 'fetch-loading'
-import { RefObject, useCallback, useEffect, useState } from 'react'
+import React, { RefObject, useEffect, useState } from 'react'
 import { IoClose, IoShieldCheckmarkOutline } from 'react-icons/io5'
 import { MdOutlineLogout } from 'react-icons/md'
-import { DialogLink } from '@/components/dialog'
+import DialogLink from './DialogLink'
 import type { DialogLinkType } from './DialogLink'
 import { handleFetchLinksApi } from '@/helper/client/handleFetchLinksApi'
 import type { Session } from '@/lib/auth/client'
@@ -12,36 +12,40 @@ import type { Session } from '@/lib/auth/client'
 type DialogProps = {
     dialogRef: RefObject<HTMLDialogElement | null>
     handleLogout: () => void
+    isDialogOpen: boolean
     session: Session
-    setApiError: React.Dispatch<React.SetStateAction<string>>
+    setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Dialog = ({
     dialogRef,
     handleLogout,
+    isDialogOpen,
     session,
-    setApiError,
+    setIsDialogOpen,
 }: DialogProps) => {
     const [dialogLinks, setDialogLinks] = useState<DialogLinkType[]>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [apiError, setApiError] = useState('')
 
-    const fetchLinks = useCallback(
-        () =>
-            handleFetchLinksApi({
-                session,
-                setApiError,
-                setDialogLinks,
-                setIsLoading,
-            }),
-        [session, setApiError]
-    )
+    const fetchLinks = async () => {
+        handleFetchLinksApi({
+            session,
+            setApiError,
+            setDialogLinks,
+            setIsLoading,
+        })
+    }
 
     useEffect(() => {
-        fetchLinks()
-    }, [fetchLinks])
+        if (isDialogOpen) {
+            fetchLinks()
+        }
+    }, [isDialogOpen])
 
     const handleCloseDialog = () => {
         dialogRef.current?.close()
+        setIsDialogOpen(false)
     }
 
     const LinksInfo = (
@@ -78,7 +82,7 @@ const Dialog = ({
             <div className="flex items-center justify-between flex-wrap gap-4 bg-background-secondary rounded-md p-4">
                 <div className="flex items-center gap-3 min-w-0">
                     <span className="text-lg rounded-full h-10 w-10 shrink-0 items-center justify-center flex font-bold bg-navigation text-outline">
-                        {session.user.name.charAt(0).toUpperCase()}
+                        {(session.user.name || session.user.email).charAt(0)}
                     </span>
                     <div className="flex flex-col gap-1 min-w-0">
                         <span
@@ -130,7 +134,7 @@ const Dialog = ({
             ) : (
                 <>
                     <p className="font-semibold">
-                        You haven't shortened any links yet.
+                        You haven&apos;t shortened any links yet.
                     </p>
 
                     {LinksInfo}
