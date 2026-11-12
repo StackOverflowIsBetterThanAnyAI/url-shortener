@@ -68,10 +68,23 @@ const Main = () => {
                         disabled={isLoading || !!shortUrl.length}
                         value={url}
                         maxLength={2048}
+                        aria-describedby={
+                            !shortUrl.length ? 'url-hint' : undefined
+                        }
+                        aria-invalid={!!apiError.length}
                     />
+                    <p role="status" className="sr-only">
+                        {shortUrl.length
+                            ? `Your short link is ready: ${shortUrl}`
+                            : ''}
+                    </p>
                     {!shortUrl.length ? (
                         apiError.length ? (
-                            <p className="invalid-link-info flex gap-1 items-center">
+                            <p
+                                id="url-hint"
+                                className="invalid-link-info flex gap-1 items-center"
+                                role="alert"
+                            >
                                 <RiErrorWarningLine
                                     color="#5946df"
                                     aria-hidden="true"
@@ -80,7 +93,10 @@ const Main = () => {
                                 {apiError}
                             </p>
                         ) : isValidUrl(url) ? (
-                            <p className="valid-link-info flex gap-1 items-center">
+                            <p
+                                id="url-hint"
+                                className="valid-link-info flex gap-1 items-center"
+                            >
                                 <FaRegCheckCircle
                                     color="#196348"
                                     aria-hidden="true"
@@ -90,7 +106,7 @@ const Main = () => {
                                 shortened.
                             </p>
                         ) : (
-                            <p className="link-info">
+                            <p id="url-hint" className="link-info">
                                 Paste a complete URL with the protocol http://
                                 or https://.
                             </p>
