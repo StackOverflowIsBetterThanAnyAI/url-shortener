@@ -34,14 +34,13 @@ export const handleShortenUrlApi = async ({
 
         if (!response.ok) {
             const data = await response.json()
-            const error = data.error
-            console.log(
+            console.error(
                 'An error occurred while trying to shorten the URL:',
-                error,
+                data.error,
                 response.status,
                 response.statusText
             )
-            setApiError(error)
+            setApiError(data.error)
             return
         }
 
