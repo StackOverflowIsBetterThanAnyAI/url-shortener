@@ -68,6 +68,10 @@ describe('Shorten form', () => {
             cy.contains('h4', 'Your short link is ready!')
             cy.get(`span[title="${SHORT_URL}"]`).should('have.text', SHORT_URL)
             urlInput().should('be.disabled').and('have.value', LONG_URL)
+            cy.get('[role="status"]').should(
+                'have.text',
+                `Your short link is ready: ${SHORT_URL}`
+            )
         })
 
         it('submits with the Enter key without reloading the page', () => {
@@ -122,7 +126,10 @@ describe('Shorten form', () => {
             submitButton().click()
             cy.wait('@shorten')
 
-            cy.contains('Domain does not exist.')
+            cy.get('[role="alert"]').should('have.text', 'Domain does not exist.')
+            urlInput()
+                .should('have.attr', 'aria-invalid', 'true')
+                .and('have.attr', 'aria-describedby', 'url-hint')
             cy.contains('Your short link is ready!').should('not.exist')
             submitButton().should('be.enabled')
         })
