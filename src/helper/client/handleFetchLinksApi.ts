@@ -1,44 +1,41 @@
 import type { DialogLinkType } from '@/components/dialog/DialogLink'
-import type { Session } from '@/lib/auth/client'
+import { isDialogLinkArray } from '@/helper/client/isDialogLinkArray'
+import { setItemInSessionStorage } from '@/helper/client/sessionStorage'
 
 type handleFetchLinksApiProps = {
-    session: Session
     setApiError: React.Dispatch<React.SetStateAction<string>>
     setDialogLinks: React.Dispatch<React.SetStateAction<DialogLinkType[]>>
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const handleFetchLinksApi = async ({
-    session,
     setApiError,
     setDialogLinks,
     setIsLoading,
 }: handleFetchLinksApiProps) => {
-    if (!session) {
-        return
-    }
-
     setIsLoading(true)
+    setApiError('')
     try {
-        const response = await fetch('/api/v1/links', {
-            method: 'GET',
-        })
+        const response = await fetch('/api/v1/links')
+        const data = await response.json()
 
         if (!response.ok) {
-            const data = await response.json()
-            const error = data.error
-            console.log(
+            console.error(
                 'An error occurred while trying to fetch your links:',
-                error,
+                data.error,
                 response.status,
                 response.statusText
             )
-            setApiError(error)
+            setApiError(data.error)
             return
         }
 
-        const data = await response.json()
+        if (!isDialogLinkArray(data.links)) {
+            throw new Error('Unexpected response format.')
+        }
+
         setDialogLinks(data.links)
+        setItemInSessionStorage('links', data.links)
     } catch (error) {
         setApiError('Something went wrong. Please try again.')
         console.error(
