@@ -109,7 +109,9 @@ describe('Authentication (stubbed session)', () => {
             cy.get('button[title="Sign in with Google"]').should('be.visible')
             cy.get('nav').should('not.contain', USER.name)
             cy.window().then((win) => {
-                expect(win.sessionStorage.getItem('url-shortener')).to.equal(null)
+                expect(win.sessionStorage.getItem('url-shortener')).to.equal(
+                    null
+                )
             })
         })
     })
@@ -173,7 +175,9 @@ describe('Authentication (stubbed session)', () => {
             cy.get('button[title="Sign in with Google"]').should('be.visible')
             cy.get('nav').should('not.contain', USER.name)
             cy.window().then((win) => {
-                expect(win.sessionStorage.getItem('url-shortener')).to.equal(null)
+                expect(win.sessionStorage.getItem('url-shortener')).to.equal(
+                    null
+                )
             })
         })
     })
