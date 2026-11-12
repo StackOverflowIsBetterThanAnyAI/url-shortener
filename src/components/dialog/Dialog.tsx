@@ -99,11 +99,12 @@ const Dialog = ({
         <dialog
             ref={dialogRef}
             closedby="any"
+            aria-labelledby="dialog-title"
             onClose={handleDialogClosed}
             className="w-full max-w-4xl bg-background m-auto rounded-md p-8 open:flex backdrop:bg-text/40 flex-col gap-4 xs:gap-6 shadow-2xl shadow-navigation/20"
         >
             <div className="flex justify-between gap-4">
-                <h2>My links</h2>
+                <h2 id="dialog-title">My links</h2>
                 <button
                     className="white flex gap-2 items-center w-24 xs:w-30"
                     title="Close Window"
@@ -169,7 +170,10 @@ const Dialog = ({
                     ariaLabel="Loading links"
                 />
             ) : apiError ? (
-                <p className="invalid-link-info flex gap-1 items-center">
+                <p
+                    className="invalid-link-info flex gap-1 items-center"
+                    role="alert"
+                >
                     <RiErrorWarningLine
                         color="#5946df"
                         aria-hidden="true"
