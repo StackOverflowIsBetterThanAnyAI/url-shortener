@@ -86,11 +86,17 @@ describe('Authentication (stubbed session)', () => {
         })
     })
 
-    describe('cached user in sessionStorage', () => {
+    describe('sessionStorage cache', () => {
+        const CACHED_LINK = {
+            short: 'a7K2mQ',
+            url: 'https://example.com/cached',
+            created_at: '2026-11-05T10:24:00.000Z',
+        }
+
         const STORAGE = JSON.stringify({
             user: { id: 'user-e2e', ...USER },
             isDialogOpen: true,
-            links: [],
+            links: [CACHED_LINK],
         })
 
         const visitWithCache = () =>
@@ -113,7 +119,24 @@ describe('Authentication (stubbed session)', () => {
             cy.get('dialog', { timeout: 1500 }).should('have.attr', 'open')
         })
 
-        it('drops the cached user when the session has expired', () => {
+        it('reopens the dialog and shows cached links while fresh ones load', () => {
+            cy.stubSession(USER)
+            cy.intercept('GET', '/api/v1/links', {
+                body: { links: [] },
+                delay: 3000,
+            }).as('links')
+
+            visitWithCache()
+            cy.wait('@getSession')
+
+            cy.get('dialog').should('have.attr', 'open')
+            cy.get('dialog').should('contain', CACHED_LINK.url)
+
+            cy.wait('@links')
+            cy.get('dialog').should('not.contain', CACHED_LINK.url)
+        })
+
+        it('clears the storage when there is no session', () => {
             cy.stubSession(null)
 
             visitWithCache()
